@@ -59,7 +59,6 @@ class BankSystem(object):
                 self.run_customer_options(found_customer)
             else:
                 return ("you have input a wrong password")
-        pass
         
     def search_customers_by_name(self, customer_name):
         #STEP A.2
@@ -71,9 +70,7 @@ class BankSystem(object):
                 break
         if found_customer == None:
             print("\nThe customer %s does not exist! Try again...\n" % customer_name)
-            return found_customer
-        pass
-
+        return found_customer
 
     def main_menu(self):
         #print the options you have
@@ -152,7 +149,7 @@ class BankSystem(object):
                 self.run_admin_options(found_admin)
             else:
                 return ("you have input a wrong password")
-        pass
+
 
 
     def search_admin_by_name(self, admin_name):
@@ -165,8 +162,8 @@ class BankSystem(object):
                 break
         if found_admin == None:
             print("\nThe admin %s does not exist! Try again...\n" % admin_name)
-            return found_admin
-        pass
+        return found_admin
+
 
 
     def admin_menu(self, admin_name):
@@ -218,13 +215,9 @@ class BankSystem(object):
             i = 0
             for c in self.customers_list:
                 i+=1
-                print('\n %d. ' %i, end = ' ')
+                print('/n %d. ' %i, end=' ')
                 c.print_details()
                 print("------------------------")
-
-        
-
-
 
 app = BankSystem()
 app.run_main_option()
