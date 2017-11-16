@@ -51,10 +51,27 @@ class BankSystem(object):
 
     def customer_login(self, name, password):
         #STEP A.1
+        found_customer = self.search_customers_by_name(name)
+        if found_customer == None:
+            return ("\n The customer has not been found!\n")
+        else:
+            if (found_customer.check_password(password) == True):
+                self.run_customer_options(found_customer)
+            else:
+                return ("you have input a wrong password")
         pass
         
     def search_customers_by_name(self, customer_name):
         #STEP A.2
+        found_customer = None
+        for a in self.customers_list:
+            name = a.get_name()
+            if name == customer_name:
+                found_customer = a
+                break
+        if found_customer == None:
+            print("\nThe customer %s does not exist! Try again...\n" % customer_name)
+            return found_customer
         pass
 
 
@@ -127,11 +144,28 @@ class BankSystem(object):
                 
     def admin_login(self, name, password):
         # STEP A.3
+        found_admin = self.search_admin_by_name(name)
+        if found_admin == None:
+            return ("\n The admin has not been found!\n")
+        else:
+            if (found_admin.check_password(password) == True):
+                self.run_admin_options(found_admin)
+            else:
+                return ("you have input a wrong password")
         pass
 
 
     def search_admin_by_name(self, admin_name):
         # STEP A.4
+        found_admin = None
+        for a in self.customers_list:
+            name = a.get_name()
+            if name == admin_name:
+                found_admin = a
+                break
+        if found_admin == None:
+            print("\nThe admin %s does not exist! Try again...\n" % admin_name)
+            return found_admin
         pass
 
 
