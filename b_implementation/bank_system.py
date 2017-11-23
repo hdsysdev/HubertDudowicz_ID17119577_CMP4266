@@ -1,17 +1,20 @@
-from customer import Customer
-from admin import Admin
-from account import Account
+import tkinter
 
+from account import Account
+from admin import Admin
+from customer import Customer
+from tkinter import *
 
 customers_list = []
 admins_list = []
 
-	
+
 class BankSystem(object):
     def __init__(self):
         self.customers_list = []
         self.admins_list = []
         self.load_bank_data()
+        self.mw = tkinter.Tk()
 
 
     def load_bank_data(self):
@@ -41,11 +44,10 @@ class BankSystem(object):
         customer_4.open_account(account_4)
         self.customers_list.append(customer_4)
 
-
         admin_1 = Admin("Julian", "1441", True, ["12", "London Road", "Birmingham", "B95 7TT"])
         self.admins_list.append(admin_1)
 
-        admin_2 = Admin("Eva", "2222", False, ["47", "Mars Street", "Newcastle", "NE12 6TZ"])
+        admin_2 = Admin("Jeff", "1234", False, ["47", "Mars Street", "Newcastle", "NE12 6TZ"])
         self.admins_list.append(admin_2)
 
 
@@ -53,12 +55,12 @@ class BankSystem(object):
         #STEP A.1
         found_customer = self.search_customers_by_name(name)
         if found_customer == None:
-            return ("\n The customer has not been found!\n")
+            return "The customer has not been found!\n"
         else:
-            if (found_customer.check_password(password) == True):
+            if found_customer.check_password(password) == True:
                 self.run_customer_options(found_customer)
             else:
-                return ("you have input a wrong password")
+                return "you have input a wrong password"
         
     def search_customers_by_name(self, customer_name):
         #STEP A.2
@@ -71,6 +73,29 @@ class BankSystem(object):
         if found_customer == None:
             print("\nThe customer %s does not exist! Try again...\n" % customer_name)
         return found_customer
+
+    def admin_login(self, name, password):
+        # STEP A.3
+        found_admin = self.search_admin_by_name(name)
+        if found_admin == None:
+            return "\n The admin has not been found!\n"
+        else:
+            if (found_admin.check_password(password) == True):
+                self.run_admin_options(found_admin)
+            else:
+                return "you have input a wrong password"
+
+    def search_admin_by_name(self, admin_name):
+        # STEP A.4
+        found_admin = None
+        for a in self.admins_list:
+            name = a.get_name()
+            if name == admin_name:
+                found_admin = a
+                break
+        if found_admin == None:
+            print("\nThe admin %s does not exist! Try again...\n" % admin_name)
+        return found_admin
 
     def main_menu(self):
         #print the options you have
@@ -138,32 +163,6 @@ class BankSystem(object):
                 loop = 0
         print ("Exit account operations")
 
-                
-    def admin_login(self, name, password):
-        # STEP A.3
-        found_admin = self.search_admin_by_name(name)
-        if found_admin == None:
-            return ("\n The admin has not been found!\n")
-        else:
-            if (found_admin.check_password(password) == True):
-                self.run_admin_options(found_admin)
-            else:
-                return ("you have input a wrong password")
-
-
-
-    def search_admin_by_name(self, admin_name):
-        # STEP A.4
-        found_admin = None
-        for a in self.customers_list:
-            name = a.get_name()
-            if name == admin_name:
-                found_admin = a
-                break
-        if found_admin == None:
-            print("\nThe admin %s does not exist! Try again...\n" % admin_name)
-        return found_admin
-
 
 
     def admin_menu(self, admin_name):
@@ -192,19 +191,32 @@ class BankSystem(object):
                 pass
             elif choice == 2:
                 #STEP A.5
-                pass
+                customer_name = input("\nPlease input customer name :\n")
+                customer = self.search_customers_by_name(customer_name)
+                if customer != None:
+                    account = customer.get_account()
+                if account != None:
+                    account.run_account_options()
             elif choice == 3:
                 #STEP A.6
-                pass
+                customer_name = input("\nPlease input customer name :\n")
+                customer = self.search_customers_by_name(customer_name)
+                if customer != None:
+                    customer.run_profile_options()
             elif choice == 4:
                 #STEP A.7
-                pass
+                admin.run_profile_options()
             elif choice == 5:
-                #STEP A.8
-                pass
+                if admin.has_full_admin_right() == True:
+                    customer_name = input("\nPlease input customer name you want to delete:\n")
+                    customer_account = self.search_customers_by_name(customer_name)
+                    if customer_account != None:
+                        self.customers_list.remove(customer)
+                    else:
+                        print("\nOnly administrators with full admin rights can remove a customer from the bank system!\n")
             elif choice == 6:
                 #STEP A.9
-                pass
+                self.print_all_accounts_details()
             elif choice == 7:
                 loop = 0
         print ("Exit account operations")
