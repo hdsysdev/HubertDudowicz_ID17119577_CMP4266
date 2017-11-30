@@ -47,7 +47,7 @@ class BankSystem(object):
         admin_1 = Admin("Julian", "1441", True, ["12", "London Road", "Birmingham", "B95 7TT"])
         self.admins_list.append(admin_1)
 
-        admin_2 = Admin("Jeff", "1234", False, ["47", "Mars Street", "Newcastle", "NE12 6TZ"])
+        admin_2 = Admin("Jeff", "1234", True, ["47", "Mars Street", "Newcastle", "NE12 6TZ"])
         self.admins_list.append(admin_2)
 
 
@@ -211,7 +211,7 @@ class BankSystem(object):
                     customer_name = input("\nPlease input customer name you want to delete:\n")
                     customer_account = self.search_customers_by_name(customer_name)
                     if customer_account != None:
-                        self.customers_list.remove(customer)
+                        self.customers_list.remove(customer_account)
                     else:
                         print("\nOnly administrators with full admin rights can remove a customer from the bank system!\n")
             elif choice == 6:

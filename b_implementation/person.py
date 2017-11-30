@@ -11,7 +11,10 @@ class Person(object):
 
     def update_name(self, name):
         self.name = name
-        
+
+    def update_address(self, address):
+        self.address = address
+
     def get_name(self):
         return self.name
 
@@ -36,7 +39,8 @@ class Person(object):
          print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
          print ("1) Update name")
          print ("2) Print details")
-         print ("3) Back")
+         print("3) Update Address")
+         print ("4) Back")
          print (" ")
          option = int(input ("Choose your option: "))
          return option
@@ -52,4 +56,7 @@ class Person(object):
             elif choice == 2:
                 self.print_details()
             elif choice == 3:
+                address = input("Please enter new address: ")
+                self.update_address(address)
+            elif choice == 4:
                 loop = 0                     
