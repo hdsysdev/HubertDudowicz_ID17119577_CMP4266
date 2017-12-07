@@ -1,4 +1,5 @@
 import tkinter
+import csv
 
 from account import Account
 from admin import Admin
@@ -18,6 +19,18 @@ class BankSystem(object):
 
 
     def load_bank_data(self):
+        with open('example.csv') as csvfile:
+            readCSV = csv.reader(csvfile, delimiter=',')
+            customers = []
+            accounts = []
+            for row in readCSV:
+                if row[0] == "Customer":
+                    customers[row] = Customer(row[1], row[2], [row[3], row[4], row[5], row[6]])
+                if row[0] == "Admin":
+                    #Combine accouts and customer/admin
+                    customers[row] = Customer(row[1], row[2], [row[3], row[4], row[5], row[6]])
+                    accounts[row] = customers[row].open_account()
+        
         customer_1 = Customer("Adam", "1234", ["14", "Wilcot Street", "Bath", "B5 5RT"])
         account_no = 1234
         account_1 = Account(5000.00, account_no)
