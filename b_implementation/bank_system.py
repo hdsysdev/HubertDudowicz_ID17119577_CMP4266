@@ -19,20 +19,28 @@ class BankSystem(object):
 
 
     def load_bank_data(self):
-        with open('example.csv') as csvfile:
+        account_no = 1234
+        with open('accounts.csv') as csvfile:
             readCSV = csv.reader(csvfile, delimiter=',')
             customers = []
             accounts = []
             for row in readCSV:
                 if row[0] == "Customer":
                     customers[row] = Customer(row[1], row[2], [row[3], row[4], row[5], row[6]])
+                    currentPerson = customers[row]
+                    currentAcc = Account(row[7], account_no)
+                    accounts[row] = currentAcc.open_account()
+                    self.customers_list.append(currentPerson)
                 if row[0] == "Admin":
                     #Combine accouts and customer/admin or open accounts with for loop after readcsv
                     customers[row] = Customer(row[1], row[2], [row[3], row[4], row[5], row[6]])
-                    accounts[row] = customers[row].open_account()
+                    currentPerson = customers[row]
+                    currentAcc = Account(row[7], account_no)
+                    accounts[row] = currentAcc.open_account()
+                    self.admins_list.append(currentPerson)
         
         customer_1 = Customer("Adam", "1234", ["14", "Wilcot Street", "Bath", "B5 5RT"])
-        account_no = 1234
+        account_no+=1
         account_1 = Account(5000.00, account_no)
         customer_1.open_account(account_1)
         self.customers_list.append(customer_1)
@@ -60,8 +68,8 @@ class BankSystem(object):
         admin_1 = Admin("Julian", "1441", True, ["12", "London Road", "Birmingham", "B95 7TT"])
         self.admins_list.append(admin_1)
 
-        admin_2 = Admin("Jeff", "1234", True, ["47", "Mars Street", "Newcastle", "NE12 6TZ"])
-        self.admins_list.append(admin_2)
+        # admin_2 = Admin("Jeff", "1234", True, ["47", "Mars Street", "Newcastle", "NE12 6TZ"])
+        # self.admins_list.append(admin_2)
 
 
     def customer_login(self, name, password):
@@ -181,7 +189,7 @@ class BankSystem(object):
     def admin_menu(self, admin_name):
         #print the options you have
          print (" ")
-         print ("Welcome Admin %s : Avilable options are:" %admin_name)
+         print ("Welcome Admin %s : Available options are:" %admin_name)
          print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
          print ("1) Transfer money")
          print ("2) Customer account operations")
