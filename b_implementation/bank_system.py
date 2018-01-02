@@ -1,5 +1,6 @@
 import tkinter
 import csv
+import os
 
 from account import Account
 from admin import Admin
@@ -24,52 +25,22 @@ class BankSystem(object):
             readCSV = csv.reader(csvfile, delimiter=',')
             customers = []
             accounts = []
+            currentIndex = 0
             for row in readCSV:
                 if row[0] == "Customer":
-                    customers[row] = Customer(row[1], row[2], [row[3], row[4], row[5], row[6]])
-                    currentPerson = customers[row]
+                    customers.append(Customer(row[1], row[2], [row[3], row[4], row[5], row[6]]))
+                    currentCustomer = customers[currentIndex]
                     currentAcc = Account(row[7], account_no)
-                    accounts[row] = currentAcc.open_account()
-                    self.customers_list.append(currentPerson)
-                if row[0] == "Admin":
+                    accounts.append(currentCustomer.open_account(currentAcc))
+                    self.customers_list.append(currentCustomer)
+                    currentIndex = currentIndex + 1
+                elif row[0] == "Admin":
                     #Combine accouts and customer/admin or open accounts with for loop after readcsv
-                    customers[row] = Customer(row[1], row[2], [row[3], row[4], row[5], row[6]])
-                    currentPerson = customers[row]
+                    customers.append(Admin(row[1], row[2], True, [row[3], row[4], row[5], row[6]]))
+                    currentAdmin = customers[currentIndex]
                     currentAcc = Account(row[7], account_no)
-                    accounts[row] = currentAcc.open_account()
-                    self.admins_list.append(currentPerson)
-        
-        customer_1 = Customer("Adam", "1234", ["14", "Wilcot Street", "Bath", "B5 5RT"])
-        account_no+=1
-        account_1 = Account(5000.00, account_no)
-        customer_1.open_account(account_1)
-        self.customers_list.append(customer_1)
-
-        customer_2 = Customer("David", "password", ["60", "Holborn Viaduct", "London", "EC1A 2FD"])
-        account_no+=1
-        account_2 = Account(3200.00,account_no)
-        customer_2.open_account(account_2)
-        self.customers_list.append(customer_2)
-
-
-        customer_3 = Customer("Alice", "MoonLight", ["5", "Cardigan Street", "Birmingham", "B4 7BD"])
-        account_no+=1
-        account_3 = Account(18000.00,account_no)
-        customer_3.open_account(account_3)
-        self.customers_list.append(customer_3)
-
-
-        customer_4 = Customer("Ali", "150A",["44", "Churchill Way West", "Basingstoke", "RG21 6YR"])
-        account_no+=1
-        account_4 = Account(40.00,account_no)
-        customer_4.open_account(account_4)
-        self.customers_list.append(customer_4)
-
-        admin_1 = Admin("Julian", "1441", True, ["12", "London Road", "Birmingham", "B95 7TT"])
-        self.admins_list.append(admin_1)
-
-        # admin_2 = Admin("Jeff", "1234", True, ["47", "Mars Street", "Newcastle", "NE12 6TZ"])
-        # self.admins_list.append(admin_2)
+                    self.admins_list.append(currentAdmin)
+                    currentIndex = currentIndex + 1
 
 
     def customer_login(self, name, password):
@@ -149,10 +120,7 @@ class BankSystem(object):
             elif choice == 3:
                 loop = 0
         print ("Thank-You for stopping by the bank!")
-
-
-    def transferMoney(self, sender_account, receiver_name, receiver_account_no, amount):
-        pass
+        
 
     def customer_menu(self, customer_name):
         #print the options you have
@@ -167,6 +135,28 @@ class BankSystem(object):
          option = int(input ("Choose your option: "))
          return option
 
+    def transferMoney(self, fromAcc, toAcc, amount):
+        tempFile = "tmp.csv"
+        with open('accounts.csv', 'r') as infile, open(tempFile, "w", newline='') as outfile:
+            readCSV = csv.reader(infile, delimiter=',')
+            writeCSV = csv.writer(outfile, delimiter=',')
+            valid = False
+            for row in readCSV:
+                if row[1] == fromAcc:
+                    balance = int(row[7])
+                    if balance >= amount:
+                        balance -= amount
+                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                        valid = True
+                    else:
+                        print("You do not have the funds required")
+                elif row[1] == toAcc and valid == True:
+                    balance = int(row[7])
+                    balance += amount
+                    writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                else:
+                    writeCSV.writerow(row)
+        os.replace(tempFile, "accounts.csv")
     
     def run_customer_options(self, customer):
                     
@@ -175,7 +165,9 @@ class BankSystem(object):
         while loop == 1:
             choice = self.customer_menu(customer.get_name())
             if choice == 1:
-                pass
+                toAcc = input("Enter name of recipient: ")
+                amount = int(input("Enter amount: "))
+                self.transferMoney(customer.get_name(), toAcc, amount)
             elif choice == 2:
                 account.run_account_options()
             elif choice == 3:
@@ -183,7 +175,6 @@ class BankSystem(object):
             elif choice == 4:
                 loop = 0
         print ("Exit account operations")
-
 
 
     def admin_menu(self, admin_name):
@@ -242,7 +233,9 @@ class BankSystem(object):
                 loop = 0
         print ("Exit account operations")
 
-
+                    
+                        
+                    
     def print_all_accounts_details(self):
             # list related operation - move to main.py
             i = 0
