@@ -1,11 +1,14 @@
 import tkinter
 import csv
 import os
+import random
+import datetime
 
 from account import Account
 from admin import Admin
 from customer import Customer
 from tkinter import *
+from datetime import datetime, timedelta
 
 customers_list = []
 admins_list = []
@@ -41,7 +44,10 @@ class BankSystem(object):
                     currentAcc = Account(row[7], account_no)
                     self.admins_list.append(currentAdmin)
                     currentIndex = currentIndex + 1
-
+                #Applying fee if its past loan return date
+                if currentAcc.getLoanAmount() != 0 and currentAcc.getReturnDate() > datetime.now():
+                    balance = currentAcc.get_balance()
+                    currentAcc.set_balance(balance - 50)
 
     def customer_login(self, name, password):
         #STEP A.1
@@ -130,7 +136,9 @@ class BankSystem(object):
          print ("1) Transfer money")
          print ("2) Other account operations")
          print ("3) profile settings")
-         print ("4) Sign out")
+         print("4) Request Loan")
+         print("5) Return Loan")
+         print ("6) Sign out")
          print (" ")
          option = int(input ("Choose your option: "))
          return option
@@ -172,7 +180,32 @@ class BankSystem(object):
                 account.run_account_options()
             elif choice == 3:
                 customer.run_profile_options()
-            elif choice == 4:
+            elif choice ==4:
+                requestAmount = int(input("How much would you like to loan: "))
+                rand = random.randint(1, 11)
+                balance = customer.get_account().get_balance()
+                #implement backend storage and add     and rand <  3
+                if requestAmount <= 10000 :
+                    print("Loan Accepted")
+                    customer.get_account().set_balance(balance+requestAmount)
+                    returnDate = datetime.now() + timedelta(days=21)
+                    customer.get_account().setReturnDate(returnDate)
+                    customer.get_account().setLoanAmount(requestAmount)
+                    print("Loan must be returned by " + str(returnDate))
+                else:
+                    print("Loan Not Accepted")
+                    
+            elif choice == 5:
+                balance = customer.get_account().get_balance()
+                loanAmount = customer.get_account().getLoanAmount()
+                if balance >= loanAmount:
+                    customer.get_account().set_balance(balance - loanAmount)
+                    print("Loan Cleared")
+                    customer.get_account().setReturnDate(0)
+                    customer.get_account().setLoanAmount(0)
+                else:
+                    print("You have insufficient funds")
+            elif choice == 6:
                 loop = 0
         print ("Exit account operations")
 

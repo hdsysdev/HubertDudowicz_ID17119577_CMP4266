@@ -1,8 +1,12 @@
+from datetime import datetime, timedelta
+
 class Account:
 
         def __init__(self, balance, account_no):
                 self.balance = float(balance)
                 self.account_no = account_no
+                self.loanAmount = 0
+                self.returnDate = datetime.now()
 
         def deposit(self, amount):
                 self.balance+=amount
@@ -13,10 +17,25 @@ class Account:
 
         def get_balance(self):
                 return self.balance
+        
+        def set_balance(self, new):
+                self.balance = new
 
         def get_account_no(self):
                 return self.account_no
+        
+        def getLoanAmount(self):
+                return self.loanAmount
+        
+        def setLoanAmount(self, loanAmount):
+                self.loanAmount = loanAmount
 
+        def getReturnDate(self):
+                return self.returnDate
+        
+        def setReturnDate(self, returnDate):
+                self.returnDate = returnDate
+                
         def account_menu(self):
                 #print the options you have
                  print (" ")
