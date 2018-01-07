@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b201da14-8b6b-44a9-bf1c-c22787774fbd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/account.py" afterPath="$PROJECT_DIR$/account.py" />
-      <change beforePath="$PROJECT_DIR$/accounts.csv" afterPath="$PROJECT_DIR$/accounts.csv" />
-      <change beforePath="$PROJECT_DIR$/bank_system.py" afterPath="$PROJECT_DIR$/bank_system.py" />
-      <change beforePath="$PROJECT_DIR$/person.py" afterPath="$PROJECT_DIR$/person.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -267,7 +263,14 @@
       <option name="project" value="LOCAL" />
       <updated>1515268533222</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added admin menu">
+      <created>1515341826600</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1515341826600</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView">
@@ -309,7 +312,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="2nd Commit" />
     <MESSAGE value="GUI Implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="GUI Implementation" />
+    <MESSAGE value="Added admin menu" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added admin menu" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
