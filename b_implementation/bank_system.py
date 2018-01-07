@@ -67,39 +67,6 @@ class BankSystem(tk.Tk):
                     balance = currentAcc.get_balance()
                     currentAcc.set_balance(balance - 50)
 
-    def main_menu(self):
-        app.mainloop()
-        # print the options you have
-        print()
-        print()
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("Welcome to the Python Bank System")
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("1) Admin login")
-        print("2) Customer login")
-        print("3) Quit Python Bank System")
-        print(" ")
-        option = int(input("Choose your option: "))
-        return option
-
-    def run_main_option(self):
-        loop = 1
-        while loop == 1:
-            choice = self.main_menu()
-            if choice == 1:
-                name = input("\nPlease input admin name: ")
-                password = input("\nPlease input admin password: ")
-                msg = self.admin_login(name, password)
-                print(msg)
-            elif choice == 2:
-                name = input("\nPlease input customer name: ")
-                password = input("\nPlease input customer password: ")
-                msg = self.customer_login(name, password)
-                print(msg)
-            elif choice == 3:
-                loop = 0
-        print("Thank-You for stopping by the bank!")
-
     def customer_menu(self, customer_name):
         # print the options you have
         print(" ")
@@ -117,6 +84,7 @@ class BankSystem(tk.Tk):
 
     def transferMoney(self, fromAcc, toAcc, amount):
         tempFile = "tmp.csv"
+
         with open('accounts.csv', 'r') as infile, open(tempFile, "w", newline='') as outfile:
             readCSV = csv.reader(infile, delimiter=',')
             writeCSV = csv.writer(outfile, delimiter=',')
@@ -180,6 +148,252 @@ class BankSystem(tk.Tk):
                 loop = 0
         print("Exit account operations")
 
+
+    def print_all_accounts_details(self):
+        # list related operation - move to main.py
+        i = 0
+        for c in self.customers_list:
+            i += 1
+            print('/n %d. ' % i, end=' ')
+            c.print_details()
+            print("------------------------")
+
+    def search_customers_by_name(object, customer_name):
+        # STEP A.2
+        found_customer = None
+        for a in customers_list:
+            name = a.get_name()
+            if name == customer_name:
+                found_customer = a
+                break
+        if found_customer == None:
+            print("\nThe customer %s does not exist! Try again...\n" % customer_name)
+        return found_customer
+
+    def search_admin_by_name(object, admin_name):
+        # STEP A.4
+        found_admin = None
+        for a in admins_list:
+            name = a.get_name()
+            if name == admin_name:
+                found_admin = a
+                break
+        if found_admin == None:
+            print("\nThe admin %s does not exist! Try again...\n" % admin_name)
+        return found_admin
+class MainMenu(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = Label(self, text="Enter Details")
+        var = tk.IntVar()
+        logintxt = Label(self, text="Login:")
+        passtxt = Label(self, text="Password:")
+        inputlogin = Entry(self)
+        inputpass = Entry(self)
+        adminradio = Radiobutton(self, text="Admin", variable=var, value=1)
+        userradio = Radiobutton(self, text="Customer", variable=var, value=2)
+        adminradio.deselect()
+        userradio.deselect()
+
+        def submitfunc():
+            if var.get() == 1:
+                admin_login(inputlogin.get(), inputpass.get())
+            elif var.get() == 2:
+                customer_login(inputlogin.get(), inputpass.get())
+            else:
+                label.config(text="Please Select Account Type")
+
+        submit = Button(self, text="Submit", command=lambda : submitfunc())
+
+        label.grid(row=0, column=0)
+        logintxt.grid(row=1, column=0)
+        inputlogin.grid(row=1, column=1)
+        passtxt.grid(row=2, column=0)
+        inputpass.grid(row=2, column=1)
+        adminradio.grid(row=3, column=0)
+        userradio.grid(row=4, column=0)
+        submit.grid(row=3, column=1)
+
+        def customer_login(name, password):
+            # STEP A.1
+            found_customer = controller.search_customers_by_name(name)
+            if found_customer == None:
+                label.config(text="User Not Found")
+            else:
+                if found_customer.check_password(password) == True:
+                    controller.show_frame(CustomerMenu)
+                else:
+                    label.config(text="Incorrect Password")
+
+        def admin_login(name, password):
+            # STEP A.3
+            found_admin = controller.search_admin_by_name(name)
+            if found_admin == None:
+                label.config(text="User Not Found")
+            else:
+                if found_admin.check_password(password) == True:
+                    controller.show_frame(AdminMenu)
+                else:
+                    label.config(text="User Not Found")
+
+
+class AdminMenu(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        def transferMoney(toAcc, fromAcc, amount, title):
+            tempFile = "tmp.csv"
+
+            with open('accounts.csv', 'r') as infile, open(tempFile, "w", newline='') as outfile:
+                readCSV = csv.reader(infile, delimiter=',')
+                writeCSV = csv.writer(outfile, delimiter=',')
+                valid = False
+                for row in readCSV:
+                    if row[1] == fromAcc:
+                        balance = int(row[7])
+                        if balance >= amount:
+                            balance -= amount
+                            writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                            valid = True
+                        else:
+                            writeCSV.writerow(row)
+                            title.config(text="You don't have the funds required!")
+                    elif row[1] == toAcc and valid == True:
+                        balance = int(row[7])
+                        balance += amount
+                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                        title.config(text="Transfer Complete!")
+                        valid = False
+                    else:
+                        writeCSV.writerow(row)
+            os.replace(tempFile, "accounts.csv")
+
+        def openTransfer():
+            transferWindow = Toplevel(self)
+            v=IntVar()
+            title = Label(transferWindow,text="Transfer Money")
+            fromAccTxt = Label(transferWindow, text="From Account: ")
+            toAccTxt = Label(transferWindow, text="To Account: ")
+            amountTxt = Label(transferWindow, text="Amount: ")
+            fromAccEntry = Entry(transferWindow)
+            toAccEntry = Entry(transferWindow)
+            amountEntry = Entry(transferWindow, textvariable=v)
+            submit = Button(transferWindow, text="Submit",
+                            command=lambda: transferMoney(toAccEntry.get(), fromAccEntry.get(), v.get(), title))
+
+            title.grid(row=0, column=0)
+            fromAccTxt.grid(row=1, column=0)
+            toAccTxt.grid(row=2, column=0)
+            amountTxt.grid(row=3, column=0)
+            fromAccEntry.grid(row=1, column=1)
+            toAccEntry.grid(row=2, column=1)
+            amountEntry.grid(row=3, column=1)
+            submit.grid(row=4, column=0)
+
+        Label(self, text="Admin Menu").grid(row=0, column=0)
+        Button(self, text="Transfer money", command=lambda : openTransfer()).grid(row=1, column=0)
+        Button(self, text="Customer Account Operations", command=lambda : customeraccop()).grid(row=2, column=0)
+        Button(self, text="Customer Profile Settings", command=lambda : customerprofsettings()).grid(row=3, column=0)
+        Button(self, text="Admin Profile Settings", command=lambda : adminprofsettings()).grid(row=4, column=0)
+        Button(self, text="Delete Customer", command=lambda : removeacc()).grid(row=5, column=0)
+        Button(self, text="List All Customers", command=lambda: listcustomers()).grid(row=6, column=0)
+
+        def listcustomers():
+            listWin = Toplevel(self)
+            iterator = 0
+            for i in customers_list:
+                Label(listWin, text="Name: %s" % i.name).pack()
+                Label(listWin, text="Address: %s" % i.address[0]).pack()
+                Label(listWin, text="%s" % i.address[1]).pack()
+                Label(listWin, text="%s" % i.address[2]).pack()
+                Label(listWin, text="%s" % i.address[3]).pack()
+                iterator += 1
+
+        def removeacc():
+            removeaccwin = Toplevel(self)
+            Label(removeaccwin, text="Remove Account").grid(row=0, column=0)
+            Label(removeaccwin, text="Account Name: ").grid(row=1, column=0)
+            accNameEntry = Entry(removeaccwin, textvariable=StringVar())
+            Button(removeaccwin, text="Submit", command=lambda: findCustomer()).grid(row=1, column=2)
+            accNameEntry.grid(row=1, column=1)
+
+            def findCustomer():
+                customer_name = accNameEntry.get()
+                customer_account = controller.search_customers_by_name(customer_name)
+                if customer_account != None:
+                    customers_list.remove(customer_account)
+                    removeaccwin.destroy()
+
+        def customerprofsettings():
+            profsettings = Toplevel(self)
+            v = StringVar();
+            title = Label(profsettings, text="Profile Operations")
+            accName = Label(profsettings, text="Account Name: ")
+            accNameEntry = Entry(profsettings, textvariable=v)
+            submit = Button(profsettings, text="Submit", command=lambda: findCustomer(profsettings))
+
+            title.grid(row=0, column=0)
+            accName.grid(row=1, column=0)
+            accNameEntry.grid(row=1, column=1)
+            submit.grid(row=1, column=2)
+
+            def findCustomer(window):
+                customer_name = v.get()
+                customer = controller.search_customers_by_name(customer_name)
+                if customer != None:
+                    window.destroy()
+                    customer.run_profile_options()
+                else:
+                    title.config(text="Profile Not Found")
+
+        def adminprofsettings():
+            profsettings = Toplevel(self)
+            v = StringVar();
+            title = Label(profsettings, text="Admin Profile Operations")
+            accName = Label(profsettings, text="Account Name: ")
+            accNameEntry = Entry(profsettings, textvariable=v)
+            submit = Button(profsettings, text="Submit", command=lambda: findAdmin(profsettings))
+
+            title.grid(row=0, column=0)
+            accName.grid(row=1, column=0)
+            accNameEntry.grid(row=1, column=1)
+            submit.grid(row=1, column=2)
+
+            def findAdmin(window):
+                admin_name = v.get()
+                admin = controller.search_admin_by_name(admin_name)
+                if admin != None:
+                    window.destroy()
+                    admin.run_profile_options()
+                else:
+                    title.config(text="Admin Profile Not Found")
+
+        def customeraccop():
+            # STEP A.5
+            accountop = Toplevel(self)
+            v = StringVar();
+            title = Label(accountop, text="Account Operations")
+            accName = Label(accountop, text="Account Name: ")
+            accNameEntry = Entry(accountop, textvariable=v)
+            submit = Button(accountop, text="Submit", command=lambda: findCustomer(accountop))
+
+            title.grid(row=0, column=0)
+            accName.grid(row=1, column=0)
+            accNameEntry.grid(row=1, column=1)
+            submit.grid(row=1, column=2)
+
+            def findCustomer(window):
+                customer_name = v.get()
+                customer = controller.search_customers_by_name(customer_name)
+                account = None
+                if customer != None:
+                    account = customer.get_account()
+                if account != None:
+                    window.destroy()
+                    account.run_account_options()
+                else:
+                    title.config(text="Account Not Found")
+
     def admin_menu(self, admin_name):
         # print the options you have
         print(" ")
@@ -197,7 +411,6 @@ class BankSystem(tk.Tk):
         return option
 
     def run_admin_options(self, admin):
-
         loop = 1
         while loop == 1:
             choice = self.admin_menu(admin.get_name())
@@ -236,107 +449,11 @@ class BankSystem(tk.Tk):
                 loop = 0
         print("Exit account operations")
 
-    def print_all_accounts_details(self):
-        # list related operation - move to main.py
-        i = 0
-        for c in self.customers_list:
-            i += 1
-            print('/n %d. ' % i, end=' ')
-            c.print_details()
-            print("------------------------")
-
-
-class MainMenu(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = Label(self, text="Enter Details")
-        var = tk.IntVar()
-        logintxt = Label(self, text="Login:")
-        passtxt = Label(self, text="Password:")
-        inputlogin = Entry(self)
-        inputpass = Entry(self)
-        adminradio = Radiobutton(self, text="Admin", variable=var, value=1)
-        userradio = Radiobutton(self, text="Customer", variable=var, value=2)
-        adminradio.deselect()
-        userradio.deselect()
-
-        def submitfunc():
-            if var.get() == 1:
-                admin_login(inputlogin.get(), inputpass.get())
-            elif var.get() == 2:
-                customer_login(inputlogin.get(), inputpass.get())
-            else:
-                label.config(text="Please Select Account Type")
-
-        submit = Button(self, text="Submit", command=lambda : submitfunc())
-
-        label.grid(row=0, column=0)
-        logintxt.grid(row=1, column=0)
-        inputlogin.grid(row=1, column=1)
-        passtxt.grid(row=2, column=0)
-        inputpass.grid(row=2, column=1)
-        adminradio.grid(row=3, column=0)
-        userradio.grid(row=4, column=0)
-        submit.grid(row=3, column=1)
-
-        def customer_login(name, password):
-            # STEP A.1
-            found_customer = search_customers_by_name(name)
-            if found_customer == None:
-                label.config(text="User Not Found")
-            else:
-                if found_customer.check_password(password) == True:
-                    controller.show_frame(CustomerMenu)
-                else:
-                    label.config(text="Incorrect Password")
-
-        def search_customers_by_name(customer_name):
-            # STEP A.2
-            found_customer = None
-            for a in customers_list:
-                name = a.get_name()
-                if name == customer_name:
-                    found_customer = a
-                    break
-            if found_customer == None:
-                print("\nThe customer %s does not exist! Try again...\n" % customer_name)
-            return found_customer
-
-        def admin_login(name, password):
-            # STEP A.3
-            found_admin = search_admin_by_name(name)
-            if found_admin == None:
-                label.config(text="User Not Found")
-            else:
-                if found_admin.check_password(password) == True:
-                    controller.show_frame(AdminMenu)
-                else:
-                    label.config(text="User Not Found")
-
-        def search_admin_by_name(admin_name):
-            # STEP A.4
-            found_admin = None
-            for a in admins_list:
-                name = a.get_name()
-                if name == admin_name:
-                    found_admin = a
-                    break
-            if found_admin == None:
-                print("\nThe admin %s does not exist! Try again...\n" % admin_name)
-            return found_admin
-
-
 class CustomerMenu(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         label = Label(self, text="Login")
         label.pack(pady=10, padx=10)
 
-class AdminMenu(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = Label(self, text="Login")
-        label.pack(pady=10, padx=10)
-
 app = BankSystem()
-app.run_main_option()
+app.mainloop()

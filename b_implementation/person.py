@@ -1,3 +1,5 @@
+import tkinter as tk
+from tkinter import *
 
 class Person(object):
 
@@ -9,54 +11,68 @@ class Person(object):
     def get_address(self):
         return self.address
 
-    def update_name(self, name):
-        self.name = name
-
-    def update_address(self, address):
-        self.address = address
-
     def get_name(self):
         return self.name
-
-    def print_details(self):
-        print("Name %s:" %self.name)
-        print("Address: %s" %self.address[0])
-        print("         %s" %self.address[1])
-        print("         %s" %self.address[2])
-        print("         %s" %self.address[3])
-        print(" ")
-
 
     def check_password(self, password):
         if self.password == password:
             return True
         return False
 
-    def profile_settings_menu(self):
-        #print the options you have
-         print (" ")
-         print ("Your Profile Settings Options Are:")
-         print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-         print ("1) Update name")
-         print ("2) Print details")
-         print("3) Update Address")
-         print ("4) Back")
-         print (" ")
-         option = int(input ("Choose your option: "))
-         return option
 
-        
     def run_profile_options(self):
-        loop = 1           
-        while loop == 1:
-            choice = self.profile_settings_menu()
-            if choice == 1:
-                name=input("\n Please enter new name\n: ")
-                self.update_name(name)
-            elif choice == 2:
-                self.print_details()
-            elif choice == 3:
-                address = input("Please enter new address: ")
-                self.update_address(address)
-            elif choice == 4:
-                loop = 0                     
+        window = tk.Tk()
+
+        def update_name():
+            nameWin = Toplevel(window)
+            v = StringVar()
+            Label(nameWin, text="Enter New Name").grid(row=0, column=0)
+            nameEntry = Entry(nameWin, textvariable=v)
+            nameEntry.grid(row=0, column=1)
+            Button(nameWin, text="Submit", command=lambda : setName()).grid(row=0, column=2)
+
+            def setName():
+                self.name = nameEntry.get()
+                nameWin.destroy()
+
+        def print_details():
+            detailsWin = Toplevel(window)
+            Label(detailsWin, text="Name: %s" % self.name).grid(row=0, column=0)
+            Label(detailsWin, text="Address: %s" % self.address[0]).grid(row=1, column=0)
+            Label(detailsWin, text="         %s" % self.address[1]).grid(row=2, column=0)
+            Label(detailsWin, text="         %s" % self.address[2]).grid(row=3, column=0)
+            Label(detailsWin, text="         %s" % self.address[3]).grid(row=4, column=0)
+
+
+        def update_address():
+            addressWin = Toplevel(window)
+
+            Label(addressWin, text="Enter New Address").grid(row=0, column=0)
+            adrln1 = Entry(addressWin, textvariable=StringVar())
+            adrln2 = Entry(addressWin, textvariable=StringVar())
+            adrln3 = Entry(addressWin, textvariable=StringVar())
+            adrln4 = Entry(addressWin, textvariable=StringVar())
+            submit = Button(addressWin, text="Submit", command=lambda :setAddress())
+            adrln1.grid(row=1, column=0)
+            adrln2.grid(row=2, column=0)
+            adrln3.grid(row=3, column=0)
+            adrln4.grid(row=4, column=0)
+            submit.grid(row=5, column=0)
+
+            def setAddress():
+                self.address[0] = adrln1.get()
+                self.address[1] = adrln2.get()
+                self.address[2] = adrln3.get()
+                self.address[3] = adrln4.get()
+                addressWin.destroy()
+
+        label = Label(window, text="Your Profile Options Are")
+        nameButton = Button(window, text="Update Name", command=lambda :update_name())
+        detailsButton = Button(window, text="Print Account Details", command=lambda: print_details())
+        addressButton = Button(window, text="Update Address", command=lambda :update_address())
+
+        label.grid(row=0, column=0)
+        nameButton.grid(row=1, column=0)
+        detailsButton.grid(row=2, column=0)
+        addressButton.grid(row=3, column=0)
+        window.mainloop()

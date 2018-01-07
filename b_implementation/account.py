@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import tkinter as tk
+from tkinter import *
 
 class Account:
 
@@ -8,12 +10,7 @@ class Account:
                 self.loanAmount = 0
                 self.returnDate = datetime.now()
 
-        def deposit(self, amount):
-                self.balance+=amount
 
-                        
-        def print_balance(self):
-                print("Your account balance is %.2f" %self.balance)
 
         def get_balance(self):
                 return self.balance
@@ -35,32 +32,38 @@ class Account:
         
         def setReturnDate(self, returnDate):
                 self.returnDate = returnDate
-                
-        def account_menu(self):
-                #print the options you have
-                 print (" ")
-                 print ("Your Transaction Options Are:")
-                 print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                 print ("1) Deposit money")
-                 print ("2) Check balance")
-                 print ("3) Back")
-                 print (" ")
-                 option = int(input ("Choose your option: "))
-                 return option
+
 
         def run_account_options(self):
-                loop = 1
-                while loop == 1:
-                        choice = self.account_menu()
-                        if choice == 1:
-                                amount=float(input("::\nPlease enter amount to be deposited\n: "))
-                                deposit = self.deposit(amount)
-                                self.print_balance()
-                        elif choice == 2:
-                                balance = self.print_balance()
-                        elif choice == 3:
-                                loop = 0
-                print ("Exit account operations")
+            window = tk.Tk()
 
+            def deposit_money():
+                inputWin = Toplevel()
+                v = IntVar()
+                inputLabel = Label(inputWin, text="Deposit Amount: ")
+                inputEntry = Entry(inputWin, textvariable=v)
+                inputButton = Button(inputWin, text="Submit", command=lambda: submit())
 
+                inputLabel.grid(row=0, column=0)
+                inputEntry.grid(row=0, column=1)
+                inputButton.grid(row=0, column=2)
+                def submit():
+                    inputWin.destroy()
+                    self.balance += v.get()
 
+            def checkbalance():
+                balanceWin = Toplevel()
+                balanceLabel = Label(balanceWin, text="Your Balance Is: ")
+                balanceAmount = Label(balanceWin, text=self.get_balance())
+                balanceLabel.grid(row=0, column=0)
+                balanceAmount.grid(row=0, column=1)
+
+            label = Label(window, text="Your Transaction Options Are: ")
+            deposit = Button(window, text="Deposit Money", command=lambda : deposit_money())
+            checkBalance = Button(window, text="Check Balance", command=lambda : checkbalance())
+
+            label.grid(row=0, column=0)
+            deposit.grid(row=1, column=0)
+            checkBalance.grid(row=2, column=0)
+
+            window.mainloop()
