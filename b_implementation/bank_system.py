@@ -2,19 +2,18 @@ import tkinter as tk
 import csv
 import os
 import random
-import datetime
 
 from account import Account
 from admin import Admin
 from customer import Customer
 from tkinter import *
 from tkinter import ttk
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 customers_list = []
 admins_list = []
 
-
+current_customer = Customer
 class BankSystem(tk.Tk):
     def __init__(self):
         self.load_bank_data()
@@ -51,7 +50,7 @@ class BankSystem(tk.Tk):
                 if row[0] == "Customer":
                     customers.append(Customer(row[1], row[2], [row[3], row[4], row[5], row[6]]))
                     currentCustomer = customers[currentIndex]
-                    currentAcc = Account(row[7], account_no)
+                    currentAcc = Account(row[7], account_no, row[8], row[9])
                     accounts.append(currentCustomer.open_account(currentAcc))
                     customers_list.append(currentCustomer)
                     currentIndex = currentIndex + 1
@@ -59,104 +58,13 @@ class BankSystem(tk.Tk):
                     # Combine accounts and customer/admin or open accounts with for loop after readcsv
                     customers.append(Admin(row[1], row[2], True, [row[3], row[4], row[5], row[6]]))
                     currentAdmin = customers[currentIndex]
-                    currentAcc = Account(row[7], account_no)
+                    currentAcc = Account(row[7], account_no,  row[8], row[9])
                     admins_list.append(currentAdmin)
                     currentIndex = currentIndex + 1
                 # Applying fee if its past loan return date
                 if currentAcc.getLoanAmount() != 0 and currentAcc.getReturnDate() > datetime.now():
                     balance = currentAcc.get_balance()
                     currentAcc.set_balance(balance - 50)
-
-    def customer_menu(self, customer_name):
-        # print the options you have
-        print(" ")
-        print("Welcome %s : Your transaction options are:" % customer_name)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("1) Transfer money")
-        print("2) Other account operations")
-        print("3) profile settings")
-        print("4) Request Loan")
-        print("5) Return Loan")
-        print("6) Sign out")
-        print(" ")
-        option = int(input("Choose your option: "))
-        return option
-
-    def transferMoney(self, fromAcc, toAcc, amount):
-        tempFile = "tmp.csv"
-
-        with open('accounts.csv', 'r') as infile, open(tempFile, "w", newline='') as outfile:
-            readCSV = csv.reader(infile, delimiter=',')
-            writeCSV = csv.writer(outfile, delimiter=',')
-            valid = False
-            for row in readCSV:
-                if row[1] == fromAcc:
-                    balance = int(row[7])
-                    if balance >= amount:
-                        balance -= amount
-                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
-                        valid = True
-                    else:
-                        print("You do not have the funds required")
-                elif row[1] == toAcc and valid == True:
-                    balance = int(row[7])
-                    balance += amount
-                    writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
-                else:
-                    writeCSV.writerow(row)
-        os.replace(tempFile, "accounts.csv")
-
-    def run_customer_options(self, customer):
-        account = customer.get_account()
-        loop = 1
-        while loop == 1:
-            choice = self.customer_menu(customer.get_name())
-            if choice == 1:
-                toAcc = input("Enter name of recipient: ")
-                amount = int(input("Enter amount: "))
-                self.transferMoney(customer.get_name(), toAcc, amount)
-            elif choice == 2:
-                account.run_account_options()
-            elif choice == 3:
-                customer.run_profile_options()
-            elif choice == 4:
-                requestAmount = int(input("How much would you like to loan: "))
-                rand = random.randint(1, 11)
-                balance = customer.get_account().get_balance()
-                # implement backend storage and add     and rand <  3
-                if requestAmount <= 10000:
-                    print("Loan Accepted")
-                    customer.get_account().set_balance(balance + requestAmount)
-                    returnDate = datetime.now() + timedelta(days=21)
-                    customer.get_account().setReturnDate(returnDate)
-                    customer.get_account().setLoanAmount(requestAmount)
-                    print("Loan must be returned by " + str(returnDate))
-                else:
-                    print("Loan Not Accepted")
-
-            elif choice == 5:
-                balance = customer.get_account().get_balance()
-                loanAmount = customer.get_account().getLoanAmount()
-                if balance >= loanAmount:
-                    customer.get_account().set_balance(balance - loanAmount)
-                    print("Loan Cleared")
-                    customer.get_account().setReturnDate(0)
-                    customer.get_account().setLoanAmount(0)
-                else:
-                    print("You have insufficient funds")
-            elif choice == 6:
-                loop = 0
-        print("Exit account operations")
-
-
-    def print_all_accounts_details(self):
-        # list related operation - move to main.py
-        i = 0
-        for c in self.customers_list:
-            i += 1
-            print('/n %d. ' % i, end=' ')
-            c.print_details()
-            print("------------------------")
 
     def search_customers_by_name(object, customer_name):
         # STEP A.2
@@ -181,6 +89,23 @@ class BankSystem(tk.Tk):
         if found_admin == None:
             print("\nThe admin %s does not exist! Try again...\n" % admin_name)
         return found_admin
+
+def saveState():
+    allaccs = admins_list+customers_list
+    tempFile = "tmp.csv"
+
+    with open(tempFile, "w", newline='') as outfile:
+        writeCSV = csv.writer(outfile, delimiter=',')
+        for account in allaccs:
+            address = account.get_address()
+            if type(account) is Admin:
+                writeCSV.writerow(["Admin", account.get_name(), account.get_password(), address[0], address[1], address[2], address[3], "0/0/0"])
+            elif type(account) is Customer:
+                writeCSV.writerow(
+                    ["Customer", account.get_name(), account.get_password(), address[0], address[1], address[2],
+                     address[3], account.get_account().get_balance(), account.get_account().getLoanAmount(), account.get_account().get_returnDate()])
+    os.replace(tempFile, "accounts.csv")
+
 class MainMenu(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -221,6 +146,8 @@ class MainMenu(tk.Frame):
                 label.config(text="User Not Found")
             else:
                 if found_customer.check_password(password) == True:
+                    global current_customer
+                    current_customer = found_customer
                     controller.show_frame(CustomerMenu)
                 else:
                     label.config(text="Incorrect Password")
@@ -281,6 +208,7 @@ class AdminMenu(tk.Frame):
             submit = Button(transferWindow, text="Submit",
                             command=lambda: transferMoney(toAccEntry.get(), fromAccEntry.get(), v.get(), title))
 
+
             title.grid(row=0, column=0)
             fromAccTxt.grid(row=1, column=0)
             toAccTxt.grid(row=2, column=0)
@@ -290,6 +218,10 @@ class AdminMenu(tk.Frame):
             amountEntry.grid(row=3, column=1)
             submit.grid(row=4, column=0)
 
+        def logOut():
+            saveState()
+            controller.show_frame(MainMenu)
+
         Label(self, text="Admin Menu").grid(row=0, column=0)
         Button(self, text="Transfer money", command=lambda : openTransfer()).grid(row=1, column=0)
         Button(self, text="Customer Account Operations", command=lambda : customeraccop()).grid(row=2, column=0)
@@ -297,6 +229,8 @@ class AdminMenu(tk.Frame):
         Button(self, text="Admin Profile Settings", command=lambda : adminprofsettings()).grid(row=4, column=0)
         Button(self, text="Delete Customer", command=lambda : removeacc()).grid(row=5, column=0)
         Button(self, text="List All Customers", command=lambda: listcustomers()).grid(row=6, column=0)
+        Button(self, text="Save State", command=lambda: saveState()).grid(row=7, column=0)
+        Button(self, text="Log Out", command=lambda: logOut()).grid(row=8, column=0)
 
         def listcustomers():
             listWin = Toplevel(self)
@@ -394,66 +328,163 @@ class AdminMenu(tk.Frame):
                 else:
                     title.config(text="Account Not Found")
 
-    def admin_menu(self, admin_name):
+class CustomerMenu(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        Label(self, text="Customer Menu").grid(row=0, column=0)
+        Button(self, text="Transfer Money", command=lambda: openTransfer()).grid(row=1, column=0)
+        Button(self, text="Other Account Operations", command=lambda: customeraccop()).grid(row=2, column=0)
+        Button(self, text="Profile Settings", command=lambda: customerprofoptions()).grid(row=3, column=0)
+        Button(self, text="Request Loan", command=lambda: requestLoan()).grid(row=4, column=0)
+        Button(self, text="Return Loan", command=lambda: repayLoan()).grid(row=5, column=0)
+
+        def repayLoan():
+            balance = current_customer.get_account().get_balance()
+            current_customer.get_account().set_balance(balance - current_customer.get_account().getLoanAmount())
+            current_customer.get_account().setReturnDate(0)
+            win = Toplevel(self)
+            Label(win, text="Loan Repayed").grid(row=0, column=0)
+        def requestLoan():
+            loanwin = Toplevel(self)
+            label = Label(loanwin, text="How much would you like to loan?")
+            label.grid(row=0, column=0)
+            v= IntVar()
+            requestAmount = Entry(loanwin, textvariable=v)
+            requestAmount.grid(row=1, column=0)
+            Button(loanwin, text="Submit", command=lambda : fillLoan(label)).grid(row=1, column=1)
+
+
+            balance = current_customer.get_account().get_balance()
+            def fillLoan(label):
+                amount = int(requestAmount.get())
+                rand = random.randint(1, 11)
+                if  amount <= 10000 and rand < 3:
+                    current_customer.get_account().set_balance(balance + amount)
+                    returnDate = datetime.strftime(datetime.now() + timedelta(days=21), "%x")
+                    current_customer.get_account().setReturnDate(returnDate)
+                    current_customer.get_account().setLoanAmount(amount)
+                    label.config(text="Loan Accepted. Loan must be returned by " + str(returnDate))
+                else:
+                    label.config(text="Loan Not Accepted")
+
+        def customerprofoptions():
+            customer_name = current_customer.get_name()
+            customer = controller.search_customers_by_name(customer_name)
+            if customer != None:
+                customer.run_profile_options()
+
+        def customeraccop():
+            customer_name = current_customer.get_name()
+            customer = controller.search_customers_by_name(customer_name)
+            account = None
+            if customer != None:
+                account = customer.get_account()
+            if account != None:
+                account.run_account_options()
+
+        def transferMoney(toAcc, fromAcc, amount, title):
+            tempFile = "tmp.csv"
+
+            with open('accounts.csv', 'r') as infile, open(tempFile, "w", newline='') as outfile:
+                readCSV = csv.reader(infile, delimiter=',')
+                writeCSV = csv.writer(outfile, delimiter=',')
+                valid = False
+                for row in readCSV:
+                    if row[1] == fromAcc:
+                        balance = float(row[7])
+                        if balance >= amount:
+                            balance -= amount
+                            writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                            valid = True
+                        else:
+                            writeCSV.writerow(row)
+                            title.config(text="You don't have the funds required!")
+                    elif row[1] == toAcc and valid == True:
+                        balance = float(row[7])
+                        balance += amount
+                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                        title.config(text="Transfer Complete!")
+                        valid = False
+                    else:
+                        writeCSV.writerow(row)
+            os.replace(tempFile, "accounts.csv")
+
+        def openTransfer():
+            transferWindow = Toplevel(self)
+            v = IntVar()
+            title = Label(transferWindow, text="Transfer Money")
+            toAccTxt = Label(transferWindow, text="To Account: ")
+            amountTxt = Label(transferWindow, text="Amount: ")
+            toAccEntry = Entry(transferWindow)
+            amountEntry = Entry(transferWindow, textvariable=v)
+            submit = Button(transferWindow, text="Submit",
+                            command=lambda: transferMoney(toAccEntry.get(), current_customer.get_name(), v.get(), title))
+
+            title.grid(row=0, column=0)
+            toAccTxt.grid(row=2, column=0)
+            amountTxt.grid(row=3, column=0)
+            toAccEntry.grid(row=2, column=1)
+            amountEntry.grid(row=3, column=1)
+            submit.grid(row=4, column=0)
+
+
+    def customer_menu(self, customer_name):
         # print the options you have
         print(" ")
-        print("Welcome Admin %s : Available options are:" % admin_name)
+        print("Welcome %s : Your transaction options are:" % customer_name)
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         print("1) Transfer money")
-        print("2) Customer account operations")
-        print("3) Customer profile settings")
-        print("4) Admin profile settings")
-        print("5) Delete customer")
-        print("6) Print all customers detail")
-        print("7) Sign out")
+        print("2) Other account operations")
+        print("3) profile settings")
+        print("4) Request Loan")
+        print("5) Return Loan")
+        print("6) Sign out")
         print(" ")
         option = int(input("Choose your option: "))
         return option
 
-    def run_admin_options(self, admin):
+    def run_customer_options(self, customer):
+        account = customer.get_account()
         loop = 1
         while loop == 1:
-            choice = self.admin_menu(admin.get_name())
+            choice = self.customer_menu(customer.get_name())
             if choice == 1:
-                pass
+                toAcc = input("Enter name of recipient: ")
+                amount = int(input("Enter amount: "))
+                self.transferMoney(customer.get_name(), toAcc, amount)
             elif choice == 2:
-                # STEP A.5
-                customer_name = input("\nPlease input customer name :\n")
-                customer = self.search_customers_by_name(customer_name)
-                if customer != None:
-                    account = customer.get_account()
-                if account != None:
-                    account.run_account_options()
+                account.run_account_options()
             elif choice == 3:
-                # STEP A.6
-                customer_name = input("\nPlease input customer name :\n")
-                customer = self.search_customers_by_name(customer_name)
-                if customer != None:
-                    customer.run_profile_options()
+                customer.run_profile_options()
             elif choice == 4:
-                # STEP A.7
-                admin.run_profile_options()
+                requestAmount = int(input("How much would you like to loan: "))
+                rand = random.randint(1, 11)
+                balance = customer.get_account().get_balance()
+                # implement backend storage and add     and rand <  3
+                if requestAmount <= 10000:
+                    print("Loan Accepted")
+                    customer.get_account().set_balance(balance + requestAmount)
+                    returnDate = datetime.strftime("%x") + timedelta(days=21)
+                    customer.get_account().setReturnDate(returnDate)
+                    customer.get_account().setLoanAmount(requestAmount)
+                    print("Loan must be returned by " + str(returnDate))
+                else:
+                    print("Loan Not Accepted")
+
             elif choice == 5:
-                if admin.has_full_admin_right() == True:
-                    customer_name = input("\nPlease input customer name you want to delete:\n")
-                    customer_account = self.search_customers_by_name(customer_name)
-                    if customer_account != None:
-                        self.customers_list.remove(customer_account)
-                    else:
-                        print(
-                            "\nOnly administrators with full admin rights can remove a customer from the bank system!\n")
+                balance = customer.get_account().get_balance()
+                loanAmount = customer.get_account().getLoanAmount()
+                if balance >= loanAmount:
+                    customer.get_account().set_balance(balance - loanAmount)
+                    print("Loan Cleared")
+                    customer.get_account().setReturnDate(0)
+                    customer.get_account().setLoanAmount(0)
+                else:
+                    print("You have insufficient funds")
             elif choice == 6:
-                # STEP A.9
-                self.print_all_accounts_details()
-            elif choice == 7:
                 loop = 0
         print("Exit account operations")
-
-class CustomerMenu(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = Label(self, text="Login")
-        label.pack(pady=10, padx=10)
 
 app = BankSystem()
 app.mainloop()

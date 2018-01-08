@@ -14,11 +14,13 @@ class Person(object):
     def get_name(self):
         return self.name
 
+    def get_password(self):
+        return  self.password
+
     def check_password(self, password):
         if self.password == password:
             return True
         return False
-
 
     def run_profile_options(self):
         window = tk.Tk()

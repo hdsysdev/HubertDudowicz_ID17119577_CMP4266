@@ -4,12 +4,11 @@ from tkinter import *
 
 class Account:
 
-        def __init__(self, balance, account_no):
+        def __init__(self, balance, account_no, loanAmount, returnDate):
                 self.balance = float(balance)
                 self.account_no = account_no
-                self.loanAmount = 0
-                self.returnDate = datetime.now()
-
+                self.loanAmount = loanAmount
+                self.returnDate = datetime.strptime(returnDate, '%d/%m/%Y')
 
 
         def get_balance(self):
