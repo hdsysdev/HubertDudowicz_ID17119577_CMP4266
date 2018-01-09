@@ -8,7 +8,7 @@ class Account:
                 self.balance = float(balance)
                 self.account_no = account_no
                 self.loanAmount = loanAmount
-                self.returnDate = datetime.strptime(returnDate, '%d/%m/%Y')
+                self.returnDate = datetime.strptime(returnDate, '%m/%d/%y')
 
 
         def get_balance(self):
@@ -27,10 +27,15 @@ class Account:
                 self.loanAmount = loanAmount
 
         def getReturnDate(self):
+            # datetime.strptime(, '%m/%d/%y')
                 return self.returnDate
-        
+
+        def getReturnDateStr(self):
+            # datetime.strptime(self.returnDate, '%m/%d/%y')
+                return datetime.strftime(self.returnDate, "%x")
+
         def setReturnDate(self, returnDate):
-                self.returnDate = returnDate
+                self.returnDate = datetime.strptime(returnDate, '%m/%d/%y')
 
 
         def run_account_options(self):

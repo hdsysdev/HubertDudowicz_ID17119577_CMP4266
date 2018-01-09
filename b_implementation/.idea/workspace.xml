@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b201da14-8b6b-44a9-bf1c-c22787774fbd" name="Default" comment="Added admin menu">
+    <list default="true" id="b201da14-8b6b-44a9-bf1c-c22787774fbd" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/../accounts.csv" afterPath="$PROJECT_DIR$/../accounts.csv" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/account.py" afterPath="$PROJECT_DIR$/account.py" />
       <change beforePath="$PROJECT_DIR$/accounts.csv" afterPath="$PROJECT_DIR$/accounts.csv" />
       <change beforePath="$PROJECT_DIR$/bank_system.py" afterPath="$PROJECT_DIR$/bank_system.py" />
-      <change beforePath="$PROJECT_DIR$/customer.py" afterPath="$PROJECT_DIR$/customer.py" />
-      <change beforePath="$PROJECT_DIR$/person.py" afterPath="$PROJECT_DIR$/person.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="525">
-      <file leaf-file-name="bank_system.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="bank_system.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/bank_system.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2099">
-              <caret line="101" column="143" lean-forward="false" selection-start-line="101" selection-start-column="143" selection-end-line="101" selection-end-column="143" />
+            <state relative-caret-position="225">
+              <caret line="60" column="70" lean-forward="true" selection-start-line="60" selection-start-column="70" selection-end-line="60" selection-end-column="70" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -33,11 +32,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="account.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="account.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/account.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="212">
-              <caret line="10" column="52" lean-forward="false" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="52" />
+            <state relative-caret-position="300">
+              <caret line="36" column="44" lean-forward="true" selection-start-line="36" selection-start-column="44" selection-end-line="36" selection-end-column="44" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
               </folding>
@@ -61,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/customer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="250">
-              <caret line="10" column="4" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="11" selection-end-column="27" />
+              <caret line="10" column="4" lean-forward="false" selection-start-line="10" selection-start-column="4" selection-end-line="11" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -71,7 +70,7 @@
         <entry file="file://$PROJECT_DIR$/admin.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="275">
-              <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+              <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -108,8 +107,8 @@
         <option value="$PROJECT_DIR$/customer.py" />
         <option value="$PROJECT_DIR$/person.py" />
         <option value="$PROJECT_DIR$/admin.py" />
-        <option value="$PROJECT_DIR$/account.py" />
         <option value="$PROJECT_DIR$/bank_system.py" />
+        <option value="$PROJECT_DIR$/account.py" />
       </list>
     </option>
   </component>
@@ -134,9 +133,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="ProjectPane" />
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -287,7 +286,14 @@
       <option name="project" value="LOCAL" />
       <updated>1515341833083</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added customer menu">
+      <created>1515445093513</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1515445093513</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView">
@@ -308,7 +314,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297414" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2413793" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2413793" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15364583" sideWeight="0.50431037" order="2" side_tool="true" content_ui="tabs" />
@@ -330,23 +336,12 @@
     <MESSAGE value="2nd Commit" />
     <MESSAGE value="GUI Implementation" />
     <MESSAGE value="Added admin menu" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added admin menu" />
+    <MESSAGE value="Added customer menu" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added customer menu" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bank_system.py</url>
-          <line>364</line>
-          <option name="timeStamp" value="80" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bank_system.py</url>
-          <line>363</line>
-          <option name="timeStamp" value="81" />
-        </line-breakpoint>
-      </breakpoints>
-      <option name="time" value="84" />
+      <option name="time" value="85" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -680,25 +675,7 @@
     <entry file="file://$PROJECT_DIR$/admin.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="275">
-          <caret line="11" column="0" lean-forward="true" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/person.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/customer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="10" column="4" lean-forward="true" selection-start-line="10" selection-start-column="4" selection-end-line="11" selection-end-column="27" />
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -723,15 +700,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
           <caret line="2930" column="8" lean-forward="false" selection-start-line="2930" selection-start-column="8" selection-end-line="2930" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/_strptime.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="445">
-          <caret line="226" column="19" lean-forward="false" selection-start-line="226" selection-start-column="19" selection-end-line="226" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -745,22 +713,48 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/account.py">
+    <entry file="file://$PROJECT_DIR$/customer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="212">
-          <caret line="10" column="52" lean-forward="false" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="52" />
+        <state relative-caret-position="250">
+          <caret line="10" column="4" lean-forward="false" selection-start-line="10" selection-start-column="4" selection-end-line="11" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/person.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
-            <element signature="e#0#40#0" expanded="true" />
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/_strptime.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="361" column="0" lean-forward="false" selection-start-line="361" selection-start-column="0" selection-end-line="361" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/bank_system.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2099">
-          <caret line="101" column="143" lean-forward="false" selection-start-line="101" selection-start-column="143" selection-end-line="101" selection-end-column="143" />
+        <state relative-caret-position="225">
+          <caret line="60" column="70" lean-forward="true" selection-start-line="60" selection-start-column="70" selection-end-line="60" selection-end-column="70" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/account.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="36" column="44" lean-forward="true" selection-start-line="36" selection-start-column="44" selection-end-line="36" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
           </folding>
         </state>
       </provider>

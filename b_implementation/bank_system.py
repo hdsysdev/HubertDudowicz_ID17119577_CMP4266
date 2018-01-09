@@ -99,11 +99,13 @@ def saveState():
         for account in allaccs:
             address = account.get_address()
             if type(account) is Admin:
-                writeCSV.writerow(["Admin", account.get_name(), account.get_password(), address[0], address[1], address[2], address[3], "0/0/0"])
+                writeCSV.writerow(
+                    ["Admin", account.get_name(), account.get_password(), address[0], address[1], address[2], address[3], 0,
+                     0, "01/01/01"])
             elif type(account) is Customer:
                 writeCSV.writerow(
                     ["Customer", account.get_name(), account.get_password(), address[0], address[1], address[2],
-                     address[3], account.get_account().get_balance(), account.get_account().getLoanAmount(), account.get_account().get_returnDate()])
+                     address[3], account.get_account().get_balance(), account.get_account().getLoanAmount(), account.get_account().getReturnDateStr()])
     os.replace(tempFile, "accounts.csv")
 
 class MainMenu(tk.Frame):
@@ -180,7 +182,7 @@ class AdminMenu(tk.Frame):
                         balance = int(row[7])
                         if balance >= amount:
                             balance -= amount
-                            writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                            writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance, row[8], row[9]])
                             valid = True
                         else:
                             writeCSV.writerow(row)
@@ -188,7 +190,7 @@ class AdminMenu(tk.Frame):
                     elif row[1] == toAcc and valid == True:
                         balance = int(row[7])
                         balance += amount
-                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance, row[8], row[9]])
                         title.config(text="Transfer Complete!")
                         valid = False
                     else:
@@ -338,6 +340,11 @@ class CustomerMenu(tk.Frame):
         Button(self, text="Profile Settings", command=lambda: customerprofoptions()).grid(row=3, column=0)
         Button(self, text="Request Loan", command=lambda: requestLoan()).grid(row=4, column=0)
         Button(self, text="Return Loan", command=lambda: repayLoan()).grid(row=5, column=0)
+        Button(self, text="Sign Out", command=lambda: logOut()).grid(row=6, column=0)
+
+        def logOut():
+            saveState()
+            controller.show_frame(MainMenu)
 
         def repayLoan():
             balance = current_customer.get_account().get_balance()
@@ -395,7 +402,7 @@ class CustomerMenu(tk.Frame):
                         balance = float(row[7])
                         if balance >= amount:
                             balance -= amount
-                            writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                            writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance, row[8], row[9]])
                             valid = True
                         else:
                             writeCSV.writerow(row)
@@ -403,7 +410,7 @@ class CustomerMenu(tk.Frame):
                     elif row[1] == toAcc and valid == True:
                         balance = float(row[7])
                         balance += amount
-                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance])
+                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance, row[8], row[9]])
                         title.config(text="Transfer Complete!")
                         valid = False
                     else:

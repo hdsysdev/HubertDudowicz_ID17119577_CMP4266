@@ -1,5 +1,4 @@
-Admin,Jeff,1234,15,Wilcot Street,Bath,B5 5RT,5000
-Admin,Jeff,1234,15,Wilcot Street,Bath,B5 5RT,5000
-Customer,Adam,1234,15,Wilcot Street,Bath,B5 5RT,5000
-Customer,Bob,1234,15,Wilcot Street,Bath,B5 5RT,5000
-Customer,Jim,1234,,,,,5000
+Admin,Jeff,1234,15,Wilcot Street,Bath,B5 5RT,0,0,01/01/2000
+Admin,Jeff,1234,15,Wilcot Street,Bath,B5 5RT,0,0,01/01/2000
+Customer,Adam,1234,15,Wilcot Street,Bath,B5 5RT,4450,0,01/01/2000
+Customer,Bob,1234,15,Wilcot Street,Bath,B5 5RT,5550,0,01/01/2000
