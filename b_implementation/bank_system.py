@@ -231,19 +231,112 @@ class AdminMenu(tk.Frame):
         Button(self, text="Admin Profile Settings", command=lambda : adminprofsettings()).grid(row=4, column=0)
         Button(self, text="Delete Customer", command=lambda : removeacc()).grid(row=5, column=0)
         Button(self, text="List All Customers", command=lambda: listcustomers()).grid(row=6, column=0)
-        Button(self, text="Save State", command=lambda: saveState()).grid(row=7, column=0)
-        Button(self, text="Log Out", command=lambda: logOut()).grid(row=8, column=0)
+        Button(self, text="View Loan Report", command=lambda: choosereportorder()).grid(row=7, column=0)
+        Button(self, text="View Pending Loans", command=lambda: viewpendingloans()).grid(row=8, column=0)
+        Button(self, text="Save State", command=lambda: saveState()).grid(row=9, column=0)
+        Button(self, text="Log Out", command=lambda: logOut()).grid(row=10, column=0)
+
+        def viewpendingloans():
+            loanwin = Toplevel(self)
+            with open('pending_loans.csv', 'r') as infile, open("temp_pending.csv", "w", newline='') as outfile:
+                readCSV = csv.reader(infile, delimiter=',')
+                writeCSV = csv.writer(outfile, delimiter=',')
+                iterator = 0
+                for row in readCSV:
+                    if iterator == 0:
+                        Label(loanwin, text="Name: " + row[0]).grid(row=1, column=0)
+                        Label(loanwin, text="Amount: " + row[1]).grid(row=2, column=0)
+                        Button(loanwin, text="Accept", command=lambda : acceptLoan(row[0], row[1], row[2], row)).grid(row=3, column=0)
+                        Button(loanwin, text="Decline", command=lambda : declineLoan(row)).grid(row=3, column=1)
+                    else:
+                        Label(loanwin, text="Name: " + row[0]).grid(row=1+iterator, column=0)
+                        Label(loanwin, text="Amount: " + row[1]).grid(row=2+iterator, column=0)
+                        Button(loanwin, text="Accept",command=lambda: acceptLoan(row[0], row[1], row[2], row)).grid(row=3+iterator, column=0)
+                        Button(loanwin, text="Decline", command=lambda: declineLoan(row)).grid(row=3+iterator, column=1)
+                    iterator += 4
+            def declineLoan(row):
+                with open('pending_loans.csv', 'r') as infile, open("temp_pending.csv", "w", newline='') as outfile:
+                    readCSV = csv.reader(infile, delimiter=',')
+                    writeCSV = csv.writer(outfile, delimiter=',')
+
+                    for currentRow in readCSV:
+                        if currentRow == row:
+                            writeCSV.writerow(["", "", ""])
+                os.replace("temp_pending.csv", "pending_loans.csv")
+                declinewin = Toplevel(self)
+                Label(declinewin, text="Loan Declined").grid(row=0, column=0)
+
+            def acceptLoan(name, amount, returndate, row):
+                with open('pending_loans.csv', 'r') as infile, open("temp_pending.csv", "w", newline='') as outfile:
+                    readCSV = csv.reader(infile, delimiter=',')
+                    writeCSV = csv.writer(outfile, delimiter=',')
+
+                    customer = controller.search_customers_by_name(name)
+                    account = customer.get_account()
+                    balance = account.get_balance()
+                    account.set_balance(balance+ float(amount))
+                    account.setLoanAmount(float(amount))
+                    account.setReturnDate(returndate)
+
+                    for currentRow in readCSV:
+                        if currentRow == row:
+                            writeCSV.writerow(["", "", ""])
+                os.replace("temp_pending.csv", "pending_loans.csv")
+                acceptwin = Toplevel(self)
+                Label(acceptwin, text="Loan Accepted").grid(row=0, column=0)
+
 
         def listcustomers():
             listWin = Toplevel(self)
-            iterator = 0
             for i in customers_list:
                 Label(listWin, text="Name: %s" % i.name).pack()
                 Label(listWin, text="Address: %s" % i.address[0]).pack()
                 Label(listWin, text="%s" % i.address[1]).pack()
                 Label(listWin, text="%s" % i.address[2]).pack()
                 Label(listWin, text="%s" % i.address[3]).pack()
-                iterator += 1
+                ttk.Separator(listWin, orient=HORIZONTAL).pack(fill=X)
+
+        def choosereportorder():
+            orderwin = Toplevel(self)
+            Button(orderwin, text="Order By Loan Amount", command=lambda : bubblesortloanamount()).pack()
+            Button(orderwin, text="Order By Return Date", command=lambda : bubblesortreturndate()).pack()
+
+            def bubblesortloanamount():
+                # Bubble Sort
+                changed = True
+                while changed:
+                    changed = False
+                    for i in range(len(customers_list) - 1):
+                        if float(customers_list[i].get_account().getLoanAmount()) < float(customers_list[i + 1].get_account().getLoanAmount()):
+                            customers_list[i], customers_list[i + 1] = customers_list[i + 1], customers_list[i]
+                            changed = True
+                listloanreport()
+
+            def bubblesortreturndate():
+                # Bubble Sort
+                changed = True
+                while changed:
+                    changed = False
+                    for i in range(len(customers_list) - 1):
+                        if customers_list[i].get_account().getReturnDate() < customers_list[i + 1].get_account().getReturnDate():
+                            customers_list[i], customers_list[i + 1] = customers_list[i + 1], customers_list[i]
+                            changed = True
+                listloanreport()
+
+            def listloanreport():
+                listWin = Toplevel(self)
+
+                for i in customers_list:
+                    account = i.get_account()
+                    Label(listWin, text="Name: %s" % i.name).pack()
+                    if float(account.getLoanAmount()) == 0:
+                        Label(listWin, text="Loan Amount: 0").pack()
+                        Label(listWin, text="Return Date: N/A").pack()
+                    else:
+                        Label(listWin, text="Loan Amount: %s" % account.getLoanAmount()).pack()
+                        Label(listWin, text="Return Date: %s" % account.getReturnDateStr()).pack()
+                    ttk.Separator(listWin, orient=HORIZONTAL).pack(fill=X)
+
 
         def removeacc():
             removeaccwin = Toplevel(self)
@@ -348,8 +441,9 @@ class CustomerMenu(tk.Frame):
 
         def repayLoan():
             balance = current_customer.get_account().get_balance()
-            current_customer.get_account().set_balance(balance - current_customer.get_account().getLoanAmount())
-            current_customer.get_account().setReturnDate(0)
+            current_customer.get_account().set_balance(balance - float(current_customer.get_account().getLoanAmount()))
+            current_customer.get_account().setReturnDate("01/01/18")
+            current_customer.get_account().setLoanAmount(0)
             win = Toplevel(self)
             Label(win, text="Loan Repayed").grid(row=0, column=0)
         def requestLoan():
@@ -373,7 +467,18 @@ class CustomerMenu(tk.Frame):
                     current_customer.get_account().setLoanAmount(amount)
                     label.config(text="Loan Accepted. Loan must be returned by " + str(returnDate))
                 else:
-                    label.config(text="Loan Not Accepted")
+                    if random.randint(1, 11) > 4:
+                        with open('pending_loans.csv', 'r') as infile, open("temp_pending.csv", "w",newline='') as outfile:
+                            readCSV = csv.reader(infile, delimiter=',')
+                            writeCSV = csv.writer(outfile, delimiter=',')
+                            for row in readCSV:
+                                if row[0] not in (None, ""):
+                                    writeCSV.writerow(row)
+                            writeCSV.writerow([current_customer.get_name(), requestAmount.get(), datetime.strftime(datetime.now() + timedelta(days=21), "%x")])
+                            label.config(text="Loan Sent To Admin For Confirmation")
+                        os.replace("temp_pending.csv", "pending_loans.csv")
+                    else:
+                        label.config(text="Loan Not Accepted")
 
         def customerprofoptions():
             customer_name = current_customer.get_name()
@@ -434,64 +539,6 @@ class CustomerMenu(tk.Frame):
             toAccEntry.grid(row=2, column=1)
             amountEntry.grid(row=3, column=1)
             submit.grid(row=4, column=0)
-
-
-    def customer_menu(self, customer_name):
-        # print the options you have
-        print(" ")
-        print("Welcome %s : Your transaction options are:" % customer_name)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print("1) Transfer money")
-        print("2) Other account operations")
-        print("3) profile settings")
-        print("4) Request Loan")
-        print("5) Return Loan")
-        print("6) Sign out")
-        print(" ")
-        option = int(input("Choose your option: "))
-        return option
-
-    def run_customer_options(self, customer):
-        account = customer.get_account()
-        loop = 1
-        while loop == 1:
-            choice = self.customer_menu(customer.get_name())
-            if choice == 1:
-                toAcc = input("Enter name of recipient: ")
-                amount = int(input("Enter amount: "))
-                self.transferMoney(customer.get_name(), toAcc, amount)
-            elif choice == 2:
-                account.run_account_options()
-            elif choice == 3:
-                customer.run_profile_options()
-            elif choice == 4:
-                requestAmount = int(input("How much would you like to loan: "))
-                rand = random.randint(1, 11)
-                balance = customer.get_account().get_balance()
-                # implement backend storage and add     and rand <  3
-                if requestAmount <= 10000:
-                    print("Loan Accepted")
-                    customer.get_account().set_balance(balance + requestAmount)
-                    returnDate = datetime.strftime("%x") + timedelta(days=21)
-                    customer.get_account().setReturnDate(returnDate)
-                    customer.get_account().setLoanAmount(requestAmount)
-                    print("Loan must be returned by " + str(returnDate))
-                else:
-                    print("Loan Not Accepted")
-
-            elif choice == 5:
-                balance = customer.get_account().get_balance()
-                loanAmount = customer.get_account().getLoanAmount()
-                if balance >= loanAmount:
-                    customer.get_account().set_balance(balance - loanAmount)
-                    print("Loan Cleared")
-                    customer.get_account().setReturnDate(0)
-                    customer.get_account().setLoanAmount(0)
-                else:
-                    print("You have insufficient funds")
-            elif choice == 6:
-                loop = 0
-        print("Exit account operations")
 
 app = BankSystem()
 app.mainloop()
