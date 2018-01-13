@@ -181,7 +181,7 @@ class AdminMenu(tk.Frame):
                     fromAccObj.set_balance(frombalance - amount)
 
                     tobalance = float(toAccObj.get_balance())
-                    toAccObj.set_balance(tobalance - amount)
+                    toAccObj.set_balance(tobalance + amount)
                     title.config(text="Transfer Complete!")
                 else:
                     title.config(text="You don't have the funds required!")
@@ -431,7 +431,7 @@ class CustomerMenu(tk.Frame):
         def repayLoan():
             balance = current_customer.get_account().get_balance()
             current_customer.get_account().set_balance(balance - float(current_customer.get_account().getLoanAmount()))
-            current_customer.get_account().setReturnDate("01/01/18")
+            current_customer.get_account().setReturnDate("01/01/01")
             current_customer.get_account().setLoanAmount(0)
             win = Toplevel(self)
             Label(win, text="Loan Repayed").grid(row=0, column=0)
