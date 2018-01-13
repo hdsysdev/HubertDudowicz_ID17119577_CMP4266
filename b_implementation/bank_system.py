@@ -171,31 +171,20 @@ class AdminMenu(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         def transferMoney(toAcc, fromAcc, amount, title):
-            tempFile = "tmp.csv"
+            toAccObj = controller.search_customers_by_name(toAcc).get_account()
+            fromAccObj = controller.search_customers_by_name(fromAcc).get_account()
+            if toAccObj is None:
+                title.config("Account Not Found")
+            else:
+                frombalance = float(fromAccObj.get_balance())
+                if frombalance >= amount:
+                    fromAccObj.set_balance(frombalance - amount)
 
-            with open('accounts.csv', 'r') as infile, open(tempFile, "w", newline='') as outfile:
-                readCSV = csv.reader(infile, delimiter=',')
-                writeCSV = csv.writer(outfile, delimiter=',')
-                valid = False
-                for row in readCSV:
-                    if row[1] == fromAcc:
-                        balance = int(row[7])
-                        if balance >= amount:
-                            balance -= amount
-                            writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance, row[8], row[9]])
-                            valid = True
-                        else:
-                            writeCSV.writerow(row)
-                            title.config(text="You don't have the funds required!")
-                    elif row[1] == toAcc and valid == True:
-                        balance = int(row[7])
-                        balance += amount
-                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance, row[8], row[9]])
-                        title.config(text="Transfer Complete!")
-                        valid = False
-                    else:
-                        writeCSV.writerow(row)
-            os.replace(tempFile, "accounts.csv")
+                    tobalance = float(toAccObj.get_balance())
+                    toAccObj.set_balance(tobalance - amount)
+                    title.config(text="Transfer Complete!")
+                else:
+                    title.config(text="You don't have the funds required!")
 
         def openTransfer():
             transferWindow = Toplevel(self)
@@ -496,31 +485,20 @@ class CustomerMenu(tk.Frame):
                 account.run_account_options()
 
         def transferMoney(toAcc, fromAcc, amount, title):
-            tempFile = "tmp.csv"
+            toAccObj = controller.search_customers_by_name(toAcc).get_account()
+            fromAccObj = controller.search_customers_by_name(fromAcc).get_account()
+            if toAccObj is None:
+                title.config("Account Not Found")
+            else:
+                frombalance = float(fromAccObj.get_balance())
+                if frombalance >= amount:
+                    fromAccObj.set_balance(frombalance - amount)
 
-            with open('accounts.csv', 'r') as infile, open(tempFile, "w", newline='') as outfile:
-                readCSV = csv.reader(infile, delimiter=',')
-                writeCSV = csv.writer(outfile, delimiter=',')
-                valid = False
-                for row in readCSV:
-                    if row[1] == fromAcc:
-                        balance = float(row[7])
-                        if balance >= amount:
-                            balance -= amount
-                            writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance, row[8], row[9]])
-                            valid = True
-                        else:
-                            writeCSV.writerow(row)
-                            title.config(text="You don't have the funds required!")
-                    elif row[1] == toAcc and valid == True:
-                        balance = float(row[7])
-                        balance += amount
-                        writeCSV.writerow([row[0], row[1], row[2], row[3], row[4], row[5], row[6], balance, row[8], row[9]])
-                        title.config(text="Transfer Complete!")
-                        valid = False
-                    else:
-                        writeCSV.writerow(row)
-            os.replace(tempFile, "accounts.csv")
+                    tobalance = float(toAccObj.get_balance())
+                    toAccObj.set_balance(tobalance - amount)
+                    title.config(text="Transfer Complete!")
+                else:
+                    title.config(text="You don't have the funds required!")
 
         def openTransfer():
             transferWindow = Toplevel(self)

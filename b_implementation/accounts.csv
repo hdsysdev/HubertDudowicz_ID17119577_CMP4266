@@ -1,6 +1,6 @@
 Admin,Jeff,1234,15,Wilcot Street,Bath,B5 5RT,0,0,01/01/01
 Admin,Jeff,1234,15,Wilcot Street,Bath,B5 5RT,0,0,01/01/01
-Customer,Fred,1234,15,Wilcot Street,Bath,B5 5RT,1150.0,500,02/01/18
-Customer,Bill,1234,11,Victoria Road,Birmingham,B5 5RT,4273.0,123,02/01/18
-Customer,Adam,1234,15,Wilcot Street,Bath,B5 5RT,14505.0,500.0,01/01/18
-Customer,Bob,1234,420,Blaze Street,Birmingham,B5 5RT,700.0,0,01/01/18
+Customer,Fred,1234,15,Wilcot Street,Bath,B5 5RT,1000.0,0,01/01/01
+Customer,Bill,1234,11,Victoria Road,Birmingham,B5 5RT,4000.0,0,01/01/01
+Customer,Adam,1234,15,Wilcot Street,Bath,B5 5RT,10500.0,0.0,01/01/01
+Customer,Bob,1234,420,Blaze Street,Birmingham,B5 5RT,700.0,0,01/01/01
